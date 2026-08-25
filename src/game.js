@@ -8,9 +8,18 @@ const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
 const isTouch = matchMedia("(pointer: coarse)").matches;
 
+const CHARACTERS = [
+  { id: "nomad", name: "The Nomad", fa: "کوچ‌نشین", cloth: 0x11181c, accent: 0xb35f3b, skin: 0x8c6247, trim: 0xd49a58, shape: "scarf" },
+  { id: "dune", name: "Dune Walker", fa: "رهرو شن", cloth: 0x8b6748, accent: 0x315d68, skin: 0xa87552, trim: 0xd8b477, shape: "hood" },
+  { id: "night", name: "Night Courier", fa: "پیک شب", cloth: 0x18202f, accent: 0x765878, skin: 0x6e4938, trim: 0x9d82a0, shape: "mask" },
+  { id: "ember", name: "Ember Scout", fa: "دیده‌بان آتش", cloth: 0x512c27, accent: 0xd06a3d, skin: 0x936246, trim: 0xe3aa60, shape: "cape" },
+  { id: "jade", name: "Jade Sentinel", fa: "نگهبان یشم", cloth: 0x173a37, accent: 0x64a68d, skin: 0x80543e, trim: 0xb7c789, shape: "hood" },
+  { id: "falcon", name: "White Falcon", fa: "شاهین سفید", cloth: 0xc8c3b3, accent: 0x397987, skin: 0xa47050, trim: 0xf0d49c, shape: "cape" }
+];
+
 const ui = {
   world: $("#game-world"), loading: $("#loading-screen"), loadingBar: $("#loading-bar"), loadingText: $("#loading-text"),
-  menu: $("#menu-screen"), levels: $("#levels-screen"), settings: $("#settings-screen"), hud: $("#hud"), touch: $("#touch-controls"),
+  menu: $("#menu-screen"), levels: $("#levels-screen"), characters: $("#characters-screen"), settings: $("#settings-screen"), hud: $("#hud"), touch: $("#touch-controls"),
   continueLevel: $("#continue-level"), totalStars: $("#total-stars"), levelGrid: $("#level-grid"), districtHeading: $("#district-heading"),
   districtName: $("#district-name"), districtRange: $("#district-range"), districtStars: $("#district-stars"), hudLevel: $("#hud-level"),
   relicCount: $("#relic-count"), sunProgress: $("#sun-progress"), shadeStatus: $("#shade-status"), shadeLabel: $("#shade-label"),
@@ -18,22 +27,23 @@ const ui = {
   resultEyebrow: $("#result-eyebrow"), resultTitle: $("#result-title"), resultRelics: $("#result-relics"), resultTime: $("#result-time"),
   resultStars: $$("#result-stars span"), nextButton: $("#next-level-button"), retryButton: $("#retry-button"), toast: $("#toast"),
   sound: $("#sound-setting"), vibration: $("#vibration-setting"), quality: $("#quality-setting"), joystick: $("#joystick"),
-  joystickKnob: $("#joystick-knob"), dash: $("#dash-button")
+  joystickKnob: $("#joystick-knob"), dash: $("#dash-button"), cameraButton: $("#camera-button"),
+  characterGrid: $("#character-grid"), selectedCharacterName: $("#selected-character-name")
 };
 
 const translations = {
   fa: {
     tagline: "خورشید هر قدم را به خاطر می‌سپارد", story: "از شهر فراموش‌شده عبور کن. سایه را دنبال کن. نگذار نور تو را پیدا کند.",
-    continue: "ادامه سفر", districts: "انتخاب منطقه", version: "نخستین گرفتگی", choosePath: "مسیرت را انتخاب کن", levelNote: "هر منطقه نور را به شکلی تازه می‌شکند.",
+    continue: "ادامه سفر", districts: "انتخاب منطقه", characters: "شخصیت‌ها", chooseRunner: "دونده خود را انتخاب کن", characterHint: "توانایی همه دوندگان یکسان است. شخصیتی را انتخاب کن که برای تو ساخته شده.", version: "نخستین گرفتگی", choosePath: "مسیرت را انتخاب کن", levelNote: "هر منطقه نور را به شکلی تازه می‌شکند.",
     preferences: "تجربه شما", settings: "تنظیمات", sound: "صدا", soundHint: "موسیقی و افکت‌ها", vibration: "لرزش", vibrationHint: "هشدار لمسی",
     quality: "گرافیک", qualityHint: "کیفیت تصویر", reset: "پاک کردن تمام پیشرفت", level: "مرحله", sunShift: "حرکت خورشید", shade: "سایه",
     firstRule: "قانون اول", stayShadow: "در سایه بمان", tutorialText: "خورشید هنگام دویدن حرکت می‌کند. سایه را ببین، بین ساختمان‌ها حرکت کن و به دروازه درخشان برس.",
-    move: "حرکت", dash: "جهش", understood: "فهمیدم", journeyPaused: "سفر متوقف شد", pause: "توقف", resume: "ادامه", restart: "شروع دوباره",
+    move: "حرکت", dash: "جهش", camera: "دوربین", understood: "فهمیدم", journeyPaused: "سفر متوقف شد", pause: "توقف", resume: "ادامه", restart: "شروع دوباره",
     quit: "بازگشت به شهر", relics: "یادگارها", time: "زمان", nextPath: "مسیر بعدی", tryAgain: "دوباره تلاش کن", levelSelect: "انتخاب مرحله"
   }
 };
 
-const defaultSave = { unlocked: 1, stars: {}, language: "en", tutorialSeen: false, sound: true, vibration: true, quality: "auto" };
+const defaultSave = { unlocked: 1, stars: {}, language: "en", tutorialSeen: false, sound: true, vibration: true, quality: "auto", character: "nomad", cameraView: 0 };
 let save;
 try { save = { ...defaultSave, ...JSON.parse(localStorage.getItem("shadow-runner-save") || "{}") }; } catch { save = { ...defaultSave }; }
 
@@ -61,6 +71,10 @@ const raycaster = new THREE.Raycaster();
 const clock = new THREE.Clock();
 let audioContext;
 let toastTimer;
+
+function selectedCharacter() {
+  return CHARACTERS.find((character) => character.id === save.character) || CHARACTERS[0];
+}
 
 function playTone(frequency, duration = 0.12, type = "sine", volume = 0.035) {
   if (!save.sound) return;
@@ -113,6 +127,7 @@ function applyLanguage() {
   });
   updateMenu();
   renderDistrict();
+  renderCharacters();
 }
 
 function configureRenderer() {
@@ -233,8 +248,9 @@ function buildCity(data) {
 function createPlayer() {
   player = new THREE.Group();
   player.position.set(-19, 0, 18);
-  const cloth = material(0x11181c);
-  const skin = material(0x8c6247);
+  const character = selectedCharacter();
+  const cloth = material(character.cloth);
+  const skin = material(character.skin);
   const body = new THREE.Mesh(new THREE.CylinderGeometry(.34, .48, 1.08, 8), cloth);
   body.position.y = 1.12;
   body.castShadow = true;
@@ -243,11 +259,27 @@ function createPlayer() {
   head.position.y = 1.88;
   head.castShadow = true;
   player.add(head);
-  const scarf = new THREE.Mesh(new THREE.BoxGeometry(.13, .1, .8), material(0xb35f3b));
+  const scarf = new THREE.Mesh(new THREE.BoxGeometry(.13, .1, character.shape === "cape" ? 1.05 : .8), material(character.accent));
   scarf.position.set(0, 1.62, .45);
   scarf.rotation.x = .16;
   scarf.castShadow = true;
   player.add(scarf);
+  if (character.shape === "hood") {
+    const hood = new THREE.Mesh(new THREE.TorusGeometry(.32, .11, 7, 12), material(character.accent));
+    hood.position.y = 1.86;
+    hood.rotation.x = Math.PI / 2;
+    hood.castShadow = true;
+    player.add(hood);
+  } else if (character.shape === "mask") {
+    const mask = new THREE.Mesh(new THREE.BoxGeometry(.42, .15, .18), material(character.accent));
+    mask.position.set(0, 1.82, .22);
+    mask.castShadow = true;
+    player.add(mask);
+  }
+  const belt = new THREE.Mesh(new THREE.CylinderGeometry(.39, .39, .09, 8), material(character.trim));
+  belt.position.y = .88;
+  belt.castShadow = true;
+  player.add(belt);
   player.userData.body = body;
   player.userData.scarf = scarf;
   player.userData.velocity = new THREE.Vector3();
@@ -356,7 +388,8 @@ function updatePlayer(delta) {
     player.userData.scarf.rotation.x = .15 + Math.sin(stride) * .12;
   }
 
-  const cameraTarget = new THREE.Vector3(player.position.x - 15, 18, player.position.z + 20);
+  const offset = save.cameraView === 1 ? new THREE.Vector3(-23, 18, 8) : new THREE.Vector3(-15, 18, 20);
+  const cameraTarget = player.position.clone().add(offset);
   camera.position.lerp(cameraTarget, 1 - Math.exp(-delta * 2.5));
   const lookAt = player.position.clone(); lookAt.y = 1;
   camera.lookAt(lookAt);
@@ -408,6 +441,8 @@ function startLevel(level) {
   ui.hudLevel.textContent = padLevel(currentLevel);
   ui.relicCount.textContent = "0";
   ui.exposureBar.style.width = "100%";
+  ui.cameraButton.classList.toggle("alternate", save.cameraView === 1);
+  ui.cameraButton.setAttribute("aria-pressed", String(save.cameraView === 1));
   setScreen(null);
   ui.hud.classList.add("active");
   if (isTouch) ui.touch.classList.add("active");
@@ -461,6 +496,47 @@ function showMenu() {
   camera.lookAt(0, 0, 0);
 }
 
+function renderCharacters() {
+  if (!ui.characterGrid) return;
+  ui.characterGrid.replaceChildren();
+  for (const character of CHARACTERS) {
+    const selected = character.id === save.character;
+    const button = document.createElement("button");
+    button.className = `character-card${selected ? " selected" : ""}`;
+    button.type = "button";
+    button.style.setProperty("--character-cloth", `#${character.cloth.toString(16).padStart(6, "0")}`);
+    button.style.setProperty("--character-accent", `#${character.accent.toString(16).padStart(6, "0")}`);
+    button.style.setProperty("--character-skin", `#${character.skin.toString(16).padStart(6, "0")}`);
+    const name = save.language === "fa" ? character.fa : character.name.toUpperCase();
+    button.innerHTML = `<span class="character-portrait" aria-hidden="true"><i></i><b></b><em></em></span><strong>${name}</strong><small>${selected ? (save.language === "fa" ? "انتخاب شده" : "SELECTED") : (save.language === "fa" ? "انتخاب" : "CHOOSE")}</small>`;
+    button.setAttribute("aria-pressed", String(selected));
+    button.addEventListener("click", () => selectCharacter(character.id));
+    ui.characterGrid.append(button);
+  }
+  const character = selectedCharacter();
+  ui.selectedCharacterName.textContent = save.language === "fa" ? character.fa : character.name.toUpperCase();
+}
+
+function selectCharacter(id) {
+  if (save.character === id) return;
+  save.character = id;
+  persist();
+  renderCharacters();
+  buildCity(generateLevel(save.unlocked));
+  playTone(480, .14, "triangle", .05);
+  vibrate(20);
+}
+
+function toggleCamera() {
+  if (gameState !== "playing") return;
+  save.cameraView = save.cameraView === 1 ? 0 : 1;
+  persist();
+  ui.cameraButton.classList.toggle("alternate", save.cameraView === 1);
+  ui.cameraButton.setAttribute("aria-pressed", String(save.cameraView === 1));
+  showToast(save.language === "fa" ? (save.cameraView ? "نمای چپ" : "نمای اصلی") : (save.cameraView ? "LEFT VIEW" : "MAIN VIEW"));
+  playTone(300, .08, "triangle", .025);
+}
+
 function renderDistrict() {
   if (!ui.levelGrid) return;
   const first = (selectedDistrict - 1) * LEVELS_PER_DISTRICT + 1;
@@ -487,12 +563,14 @@ function renderDistrict() {
 function bindUI() {
   $("#continue-button").addEventListener("click", () => startLevel(save.unlocked));
   $("#levels-button").addEventListener("click", () => { selectedDistrict = getDistrict(save.unlocked); renderDistrict(); setScreen(ui.levels); });
+  $("#characters-button").addEventListener("click", () => { renderCharacters(); setScreen(ui.characters); });
   $("#settings-button").addEventListener("click", () => setScreen(ui.settings));
   $$('[data-back]').forEach((button) => button.addEventListener("click", showMenu));
   $("#previous-district").addEventListener("click", () => { selectedDistrict = Math.max(1, selectedDistrict - 1); renderDistrict(); });
   $("#next-district").addEventListener("click", () => { selectedDistrict = Math.min(50, selectedDistrict + 1); renderDistrict(); });
   $("#language-button").addEventListener("click", () => { save.language = save.language === "fa" ? "en" : "fa"; persist(); applyLanguage(); });
   $("#pause-button").addEventListener("click", pauseGame);
+  ui.cameraButton.addEventListener("click", toggleCamera);
   ui.tutorial.addEventListener("close", () => { save.tutorialSeen = true; persist(); gameState = "playing"; });
   ui.pause.addEventListener("close", () => {
     if (ui.pause.returnValue === "restart") startLevel(currentLevel);
@@ -531,6 +609,7 @@ function bindInput() {
     keys.add(event.code);
     if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Space"].includes(event.code)) event.preventDefault();
     if (event.code === "Space") triggerDash();
+    if (event.code === "KeyC" && !event.repeat) toggleCamera();
     if (event.code === "Escape") pauseGame();
   });
   addEventListener("keyup", (event) => keys.delete(event.code));

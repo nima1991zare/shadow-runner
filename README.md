@@ -8,7 +8,7 @@ Shadow Runner is a 3D stealth-runner about surviving a city whose shadows move w
 - Moving directional sun and geometry-based shadow safety checks
 - Sun exposure, dash, animated player, collision, relics, goal gates, ranks, and par times
 - Deterministic progression through 1,000 levels in 50 districts
-- Keyboard, touch joystick, haptics, synthesized audio, pause, settings, and local saves
+- Six selectable characters, dual camera angles, keyboard, touch joystick, haptics, synthesized audio, pause, settings, and local saves
 - English and Persian interface with RTL support
 - Responsive HUD, safe-area support, reduced-motion support, and PWA offline cache
 - Capacitor configuration for Android and iOS store builds
@@ -20,7 +20,7 @@ npm install
 npm run dev
 ```
 
-Use `WASD` or arrow keys to move and `Space` to dash. On touch devices, use the on-screen joystick and dash button.
+Use `WASD` or arrow keys to move, `Space` to dash, and `C` to switch camera angles. On touch devices, use the on-screen joystick, dash button, and camera button.
 
 ## Validate
 

@@ -41,6 +41,7 @@
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
           </button>
           <button id="levels-button" class="secondary-button" type="button" data-i18n="districts">SELECT DISTRICT</button>
+          <button id="characters-button" class="secondary-button" type="button" data-i18n="characters">CHARACTERS</button>
         </nav>
         <footer class="menu-footer"><span id="total-stars">0 / 3000 STARS</span><span data-i18n="version">THE FIRST ECLIPSE</span></footer>
       </section>
@@ -60,6 +61,16 @@
         <p class="level-note" data-i18n="levelNote">Each district bends the light in a new way.</p>
       </section>
 
+      <section id="characters-screen" class="screen panel-screen" aria-labelledby="characters-heading">
+        <header class="panel-header">
+          <button class="back-button icon-button" data-back="menu-screen" type="button" aria-label="Back"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></button>
+          <div><p class="eyebrow" data-i18n="chooseRunner">CHOOSE YOUR RUNNER</p><h2 id="characters-heading" data-i18n="characters">CHARACTERS</h2></div>
+          <span id="selected-character-name" class="district-stars">THE NOMAD</span>
+        </header>
+        <div id="character-grid" class="character-grid" aria-label="Characters"></div>
+        <p class="level-note" data-i18n="characterHint">Every runner has the same abilities. Choose the one that feels like yours.</p>
+      </section>
+
       <section id="settings-screen" class="screen panel-screen compact-panel" aria-labelledby="settings-heading">
         <header class="panel-header">
           <button class="back-button icon-button" data-back="menu-screen" type="button" aria-label="Back"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></button>
@@ -76,6 +87,7 @@
       <section id="hud" class="hud" aria-label="Game status">
         <header class="hud-top">
           <button id="pause-button" class="icon-button" type="button" aria-label="Pause"><svg viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"/></svg></button>
+          <button id="camera-button" class="icon-button camera-button" type="button" aria-label="Switch camera angle" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M4 8h3l2-2h6l2 2h3v10H4V8Z"/><circle cx="12" cy="13" r="3"/><path class="camera-arrow" d="m17 4 2-2 2 2"/></svg></button>
           <div class="level-indicator"><small data-i18n="level">LEVEL</small><strong id="hud-level">001</strong></div>
           <div class="relic-counter"><svg viewBox="0 0 24 24"><path d="m12 2 4.5 6.5L12 22 7.5 8.5 12 2Z"/></svg><strong id="relic-count">0</strong><span>/ 3</span></div>
         </header>
@@ -96,7 +108,7 @@
           <p class="eyebrow" data-i18n="firstRule">THE FIRST RULE</p>
           <h2 data-i18n="stayShadow">STAY IN THE SHADOW</h2>
           <p data-i18n="tutorialText">The sun moves while you run. Watch the shade, move between buildings, and reach the glowing gate.</p>
-          <div class="control-hints"><span>WASD / ARROWS</span><span data-i18n="move">MOVE</span><span>SPACE</span><span data-i18n="dash">DASH</span></div>
+          <div class="control-hints"><span>WASD / ARROWS</span><span data-i18n="move">MOVE</span><span>SPACE</span><span data-i18n="dash">DASH</span><span>C</span><span data-i18n="camera">CAMERA</span></div>
           <button class="primary-button simple" value="start" type="submit" data-i18n="understood">I UNDERSTAND</button>
         </form>
       </dialog>
