@@ -1,0 +1,6 @@
+{
+  "appId": "com.shadowrunner.game",
+  "appName": "Shadow Runner",
+  "webDir": "dist",
+  "server": { "androidScheme": "https" }
+}

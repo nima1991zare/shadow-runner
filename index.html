@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#10161b" />
+    <meta name="description" content="Shadow Runner - survive the moving sun in a forgotten city." />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+    <title>Shadow Runner</title>
+  </head>
+  <body>
+    <main id="app">
+      <div id="game-world" aria-label="3D game world"></div>
+      <div class="vignette" aria-hidden="true"></div>
+      <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+      <section id="loading-screen" class="screen loading-screen active" aria-label="Loading game">
+        <div class="brand-mark" aria-hidden="true"><span></span></div>
+        <p class="eyebrow">A GAME OF LIGHT &amp; SILENCE</p>
+        <h1>SHADOW<br /><strong>RUNNER</strong></h1>
+        <div class="loading-track"><i id="loading-bar"></i></div>
+        <p id="loading-text" class="muted">Waking the old city...</p>
+      </section>
+
+      <section id="menu-screen" class="screen menu-screen" aria-labelledby="game-title">
+        <header class="menu-header">
+          <button id="language-button" class="icon-button text-button" type="button" aria-label="Change language">فا</button>
+          <button id="settings-button" class="icon-button" type="button" aria-label="Settings">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15.25A3.25 3.25 0 1 0 12 8.75a3.25 3.25 0 0 0 0 6.5Z"/><path d="m19.4 15 .1.08a2 2 0 0 1-2.83 2.83l-.08-.1a1.7 1.7 0 0 0-2.9 1.2V19a2 2 0 0 1-4 0v-.12a1.7 1.7 0 0 0-2.9-1.2l-.08.1a2 2 0 1 1-2.83-2.83l.1-.08a1.7 1.7 0 0 0-1.2-2.9H2.7a2 2 0 0 1 0-4h.12a1.7 1.7 0 0 0 1.2-2.9l-.1-.08a2 2 0 1 1 2.83-2.83l.08.1a1.7 1.7 0 0 0 2.9-1.2V1a2 2 0 0 1 4 0v.12a1.7 1.7 0 0 0 2.9 1.2l.08-.1a2 2 0 1 1 2.83 2.83l-.1.08a1.7 1.7 0 0 0 1.2 2.9h.12a2 2 0 0 1 0 4h-.12a1.7 1.7 0 0 0-1.2 2.9Z"/></svg>
+          </button>
+        </header>
+        <div class="title-lockup">
+          <p class="eyebrow" data-i18n="tagline">THE SUN REMEMBERS EVERY STEP</p>
+          <h1 id="game-title">SHADOW <strong>RUNNER</strong></h1>
+          <p class="story" data-i18n="story">Cross the forgotten city. Follow the shade. Never let the light find you.</p>
+        </div>
+        <nav class="menu-actions" aria-label="Main menu">
+          <button id="continue-button" class="primary-button" type="button">
+            <span><small data-i18n="continue">CONTINUE JOURNEY</small><b id="continue-level">LEVEL 001</b></span>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+          </button>
+          <button id="levels-button" class="secondary-button" type="button" data-i18n="districts">SELECT DISTRICT</button>
+        </nav>
+        <footer class="menu-footer"><span id="total-stars">0 / 3000 STARS</span><span data-i18n="version">THE FIRST ECLIPSE</span></footer>
+      </section>
+
+      <section id="levels-screen" class="screen panel-screen" aria-labelledby="district-heading">
+        <header class="panel-header">
+          <button class="back-button icon-button" data-back="menu-screen" type="button" aria-label="Back"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></button>
+          <div><p class="eyebrow" data-i18n="choosePath">CHOOSE YOUR PATH</p><h2 id="district-heading">DISTRICT 01</h2></div>
+          <span id="district-stars" class="district-stars">0 / 60</span>
+        </header>
+        <div class="district-nav">
+          <button id="previous-district" class="icon-button" type="button" aria-label="Previous district"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></button>
+          <div><strong id="district-name">THE OLD QUARTER</strong><span id="district-range">LEVELS 001-020</span></div>
+          <button id="next-district" class="icon-button" type="button" aria-label="Next district"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></button>
+        </div>
+        <div id="level-grid" class="level-grid" aria-label="Levels"></div>
+        <p class="level-note" data-i18n="levelNote">Each district bends the light in a new way.</p>
+      </section>
+
+      <section id="settings-screen" class="screen panel-screen compact-panel" aria-labelledby="settings-heading">
+        <header class="panel-header">
+          <button class="back-button icon-button" data-back="menu-screen" type="button" aria-label="Back"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></button>
+          <div><p class="eyebrow" data-i18n="preferences">YOUR EXPERIENCE</p><h2 id="settings-heading" data-i18n="settings">SETTINGS</h2></div>
+        </header>
+        <div class="settings-list">
+          <label><span><b data-i18n="sound">SOUND</b><small data-i18n="soundHint">Music and effects</small></span><input id="sound-setting" type="checkbox" checked /><i></i></label>
+          <label><span><b data-i18n="vibration">VIBRATION</b><small data-i18n="vibrationHint">Haptic warnings</small></span><input id="vibration-setting" type="checkbox" checked /><i></i></label>
+          <label class="select-row"><span><b data-i18n="quality">GRAPHICS</b><small data-i18n="qualityHint">Visual quality</small></span><select id="quality-setting"><option value="auto">AUTO</option><option value="high">HIGH</option><option value="low">BATTERY SAVER</option></select></label>
+          <button id="reset-progress" class="danger-button" type="button" data-i18n="reset">RESET ALL PROGRESS</button>
+        </div>
+      </section>
+
+      <section id="hud" class="hud" aria-label="Game status">
+        <header class="hud-top">
+          <button id="pause-button" class="icon-button" type="button" aria-label="Pause"><svg viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"/></svg></button>
+          <div class="level-indicator"><small data-i18n="level">LEVEL</small><strong id="hud-level">001</strong></div>
+          <div class="relic-counter"><svg viewBox="0 0 24 24"><path d="m12 2 4.5 6.5L12 22 7.5 8.5 12 2Z"/></svg><strong id="relic-count">0</strong><span>/ 3</span></div>
+        </header>
+        <aside class="sun-clock" aria-label="Sun position"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v3m0 16v3M4.2 4.2l2.1 2.1m11.4 11.4 2.1 2.1M1 12h3m16 0h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg><div><small data-i18n="sunShift">SUN SHIFT</small><i><span id="sun-progress"></span></i></div></aside>
+        <div id="shade-status" class="shade-status safe"><span></span><div><small data-i18n="shade">SHADE</small><strong id="shade-label">PROTECTED</strong></div><i><span id="exposure-bar"></span></i></div>
+        <p id="objective" class="objective">REACH THE GATE</p>
+      </section>
+
+      <div id="touch-controls" class="touch-controls" aria-hidden="true">
+        <div id="joystick" class="joystick"><span id="joystick-knob"></span></div>
+        <button id="dash-button" class="dash-button" type="button" aria-label="Dash"><svg viewBox="0 0 24 24"><path d="m13 2-9 12h7l-1 8 10-13h-7V2Z"/></svg><small>DASH</small></button>
+      </div>
+
+      <dialog id="tutorial-dialog" class="game-dialog tutorial-dialog">
+        <form method="dialog">
+          <p class="step-count">01 / 02</p>
+          <div class="tutorial-art"><span class="sun-art"></span><span class="tower-art"></span><span class="runner-art"></span></div>
+          <p class="eyebrow" data-i18n="firstRule">THE FIRST RULE</p>
+          <h2 data-i18n="stayShadow">STAY IN THE SHADOW</h2>
+          <p data-i18n="tutorialText">The sun moves while you run. Watch the shade, move between buildings, and reach the glowing gate.</p>
+          <div class="control-hints"><span>WASD / ARROWS</span><span data-i18n="move">MOVE</span><span>SPACE</span><span data-i18n="dash">DASH</span></div>
+          <button class="primary-button simple" value="start" type="submit" data-i18n="understood">I UNDERSTAND</button>
+        </form>
+      </dialog>
+
+      <dialog id="pause-dialog" class="game-dialog">
+        <form method="dialog">
+          <p class="eyebrow" data-i18n="journeyPaused">JOURNEY PAUSED</p><h2 data-i18n="pause">PAUSE</h2>
+          <button class="primary-button simple" value="resume" type="submit" data-i18n="resume">RESUME</button>
+          <button id="restart-button" class="secondary-button" value="restart" type="submit" data-i18n="restart">RESTART LEVEL</button>
+          <button id="quit-button" class="quiet-button" value="quit" type="submit" data-i18n="quit">RETURN TO CITY</button>
+        </form>
+      </dialog>
+
+      <dialog id="result-dialog" class="game-dialog result-dialog">
+        <form method="dialog">
+          <div id="result-symbol" class="result-symbol"><svg viewBox="0 0 24 24"><path d="M5 12.5 9.5 17 19 7.5"/></svg></div>
+          <p id="result-eyebrow" class="eyebrow">PATH COMPLETE</p><h2 id="result-title">THE SHADOW HOLDS</h2>
+          <div id="result-stars" class="result-stars"><span>★</span><span>★</span><span>★</span></div>
+          <div class="result-stats"><span><small data-i18n="relics">RELICS</small><b id="result-relics">0 / 3</b></span><span><small data-i18n="time">TIME</small><b id="result-time">00:00</b></span></div>
+          <button id="next-level-button" class="primary-button simple" value="next" type="submit" data-i18n="nextPath">NEXT PATH</button>
+          <button id="retry-button" class="primary-button simple hidden" value="retry" type="submit" data-i18n="tryAgain">TRY AGAIN</button>
+          <button id="result-menu-button" class="quiet-button" value="menu" type="submit" data-i18n="levelSelect">LEVEL SELECT</button>
+        </form>
+      </dialog>
+    </main>
+    <script type="module" src="/src/game.js"></script>
+  </body>
+</html>

@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Shadow Runner</string>
+    <string name="title_activity_main">Shadow Runner</string>
+    <string name="package_name">com.shadowrunner.game</string>
+    <string name="custom_url_scheme">com.shadowrunner.game</string>
+</resources>
