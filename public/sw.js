@@ -1,12 +1,23 @@
-const CACHE = "shadow-runner-v1";
-const CORE = ["/", "/manifest.webmanifest", "/icon.svg"];
+const CACHE = "shadow-runner-v2";
+const ROOT = new URL("./", self.location.href);
+const CORE = [
+  ROOT.href,
+  new URL("manifest.webmanifest", ROOT).href,
+  new URL("icon.svg", ROOT).href,
+  new URL("assets/index.css", ROOT).href,
+  new URL("assets/index.js", ROOT).href,
+  new URL("assets/three.js", ROOT).href,
+  new URL("assets/web.js", ROOT).href
+];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(CORE)));
 });
 
 self.addEventListener("activate", (event) => {
-  event.waitUntil(caches.keys().then((keys) => Promise.all(keys.filter((key) => key !== CACHE).map((key) => caches.delete(key)))));
+  event.waitUntil(caches.keys().then((keys) => Promise.all(keys
+    .filter((key) => key.startsWith("shadow-runner-") && key !== CACHE)
+    .map((key) => caches.delete(key)))));
 });
 
 self.addEventListener("fetch", (event) => {
@@ -21,7 +32,7 @@ self.addEventListener("fetch", (event) => {
       }
       return response;
     } catch {
-      return event.request.mode === "navigate" ? caches.match("/") : Response.error();
+      return event.request.mode === "navigate" ? caches.match(ROOT.href) : Response.error();
     }
   }));
 });

@@ -2,10 +2,10 @@
   "name": "Shadow Runner",
   "short_name": "Shadow Runner",
   "description": "A 3D game of light, movement, and survival.",
-  "start_url": "/",
+  "start_url": "./",
   "display": "fullscreen",
   "orientation": "landscape",
   "background_color": "#10161b",
   "theme_color": "#d49753",
-  "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }]
+  "icons": [{ "src": "./icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }]
 }

@@ -676,7 +676,9 @@ async function boot() {
   buildCity(generateLevel(save.unlocked));
   showMenu();
   requestAnimationFrame(animate);
-  if ("serviceWorker" in navigator && location.protocol !== "file:") navigator.serviceWorker.register("/sw.js").catch(() => {});
+  if ("serviceWorker" in navigator && location.protocol !== "file:") {
+    navigator.serviceWorker.register(new URL("sw.js", document.baseURI)).catch(() => {});
+  }
 }
 
 addEventListener("resize", () => {
