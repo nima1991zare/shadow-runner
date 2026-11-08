@@ -66,3 +66,11 @@ Run `npm run build`, host `dist`, and install it from Microsoft Edge as a PWA. F
 - Test performance on mid-range physical Android and iOS devices before release.
 - Keep hand-authored featured levels for store screenshots while retaining procedural generation for the full campaign.
 - Add store billing only after choosing the exact paid-download or in-app-purchase model required by the target store.
+
+---
+
+## 🤖 Continue with a new AI — Handoff (2026-11-08)
+- **What:** Shadow Runner — 3D stealth-runner (survive a city whose shadows move with the sun). Installable PWA + Capacitor (Android/iOS).
+- **Built with:** Three.js (JS), Capacitor, Node tooling. 
+- **Run:** `npm install` then the dev script in `package.json`; build PWA/APK via Capacitor.
+- **Change:** `src/` (game + Three.js). **Do NOT touch:** `node_modules/`, `dist/`, `android/*/build/`.
